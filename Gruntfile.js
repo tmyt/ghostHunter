@@ -13,6 +13,14 @@ module.exports = function(grunt) {
                         content = content.replace(/\/\*\s+lunr\s+\*\//i, lunr);
                         var levenshtein = grunt.file.read('./src/levenshtein.js');
                         content = content.replace(/\/\*\s+levenshtein\s+\*\//i, levenshtein);
+			var lunr_stemmer = grunt.file.read('./node_modules/lunr-languages/lunr.stemmer.support.js');
+			content = content.replace(/\/\*\s+lunr-stemmer\s+\*\//i, lunr_stemmer);
+			var tinyseg = grunt.file.read('./node_modules/lunr-languages/tinyseg.js');
+			content = content.replace(/\/\*\s+tinyseg\s+\*\//i, tinyseg);
+			var lunr_ja = grunt.file.read('./node_modules/lunr-languages/lunr.ja.js');
+			content = content.replace(/\/\*\s+lunr-ja\s+\*\//i, lunr_ja);
+			var lunr_multi = grunt.file.read('./node_modules/lunr-languages/lunr.multi.js');
+			content = content.replace(/\/\*\s+lunr-multi\s+\*\//i, lunr_multi);
                         return grunt.template.process(content)
                     }
                 }

@@ -3273,7 +3273,7 @@ lunr.QueryParser.parseBoost = function (parser) {
 					var parsedData 	= {
 						id 			: String(arrayItem.id),
 						title 		: String(arrayItem.title),
-						description	: String(arrayItem.custom_excerpt),
+						description	: String(arrayItem.custom_excerpt || arrayItem.excerpt),
 						pubDate 	: String(arrayItem.published_at),
 						tag 		: category
 					}
