@@ -10,6 +10,14 @@
 
 	/* LEVENSHTEIN */
 
+	/* LUNR-STEMMER */
+
+	/* TINYSEG */
+
+	/* LUNR-JA */
+
+	/* LUNR-MULTI */
+
 	//This is the main plugin definition
 	$.fn.ghostHunter 	= function( options ) {
 
@@ -109,6 +117,7 @@
 			var idxSrc = data.posts;
 			// console.log("ghostHunter: indexing all posts")
 			me.index = lunr(function () {
+				this.use(lunr.ja);
 				this.ref('id');
 				this.field('title');
 				this.field('description');
