@@ -281,6 +281,7 @@
 				}
 				this.field('pubDate');
 				this.field('tag');
+				this.field('feature_image');
 				idxSrc.forEach(function (arrayItem) {
 					// console.log("start indexing an item: " + arrayItem.id);
 					// Track the latest value of updated_at,  to stash in localStorage
@@ -298,11 +299,12 @@
 						category = "undefined";
 					}
 					var parsedData 	= {
-						id 			: String(arrayItem.id),
+						id 		: String(arrayItem.id),
 						title 		: String(arrayItem.title),
 						description	: String(arrayItem.custom_excerpt || arrayItem.excerpt),
 						pubDate 	: String(arrayItem.published_at),
-						tag 		: category
+						tag 		: category,
+						feature_image	: String(arrayItem.feature_image)
 					}
 					if  ( me.includebodysearch ){
 						parsedData.plaintext=String(arrayItem.plaintext);
@@ -314,7 +316,8 @@
 						description: arrayItem.custom_excerpt,
 						pubDate: prettyDate(parsedData.pubDate),
 						link: localUrl,
-						tags: tag_arr
+						tags: tag_arr,
+						feature_image: arrayItem.feature_image
 					};
 					// If there is a metadata "pre"-processor for the item, run it here.
 					if (me.item_preprocessor) {
