@@ -71,9 +71,10 @@
 			this.setAttribute('id', newAttr);
 		});
 	};
-	var updateSearchList = function(listItems, apiData, steps) {
+	var updateSearchList = function(apiData, steps) {
 		for (var i=0,ilen=steps.length;i<ilen;i++) {
 			var step = steps[i];
+			var listItems = $('.gh-search-item');
 			if (step[0] == "delete") {
 				listItems.eq(step[1]-1).remove();
 			} else {
@@ -85,11 +86,10 @@
 				} else if (step[0] === "insert") {
 					var pos;
 					if (step[1] === 0) {
-						pos = null;
+						listItems.eq(null).before(html);
 					} else {
-						pos = (step[1]-1)
+						listItems.eq(step[1]-1).after(html);
 					}
-					listItems.eq(pos).after(html);
 				}
 			}
 		}
@@ -383,8 +383,7 @@
 					}
 				}
 				// Get an array of IDs present in current results
-				var listItems = $('.gh-search-item');
-				var currentRefs = listItems
+				var currentRefs = $('.gh-search-item')
 					.map(function(){
 						return this.id.slice(3);
 					}).get();
@@ -403,7 +402,7 @@
 					var levenshtein = new Levenshtein(currentRefs, newRefs);
 					var steps = levenshtein.getSteps();
 					// Apply the operations
-					updateSearchList.call(this, listItems, searchResult, steps);
+					updateSearchList.call(this, searchResult, steps);
 				}
 				// Tidy up
 				if(this.onComplete) {

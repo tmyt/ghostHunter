@@ -65,9 +65,10 @@
 		});
 	};
 
-	var updateSearchList = function(listItems, apiData, steps) {
+	var updateSearchList = function(apiData, steps) {
 		for (var i=0,ilen=steps.length;i<ilen;i++) {
 			var step = steps[i];
+			var listItems = $('.gh-search-item');
 			if (step[0] == "delete") {
 				listItems.eq(step[1]-1).remove();
 			} else {
@@ -79,11 +80,10 @@
 				} else if (step[0] === "insert") {
 					var pos;
 					if (step[1] === 0) {
-						pos = null;
+						listItems.eq(null).before(html);
 					} else {
-						pos = (step[1]-1)
+						listItems.eq(step[1]-1).after(html);
 					}
-					listItems.eq(pos).after(html);
 				}
 			}
 		}
@@ -110,6 +110,7 @@
 			var idxSrc = data.posts;
 			// console.log("ghostHunter: indexing all posts")
 			me.index = lunr(function () {
+				this.use(lunr.ja);
 				this.ref('id');
 				this.field('title');
 				this.field('description');
@@ -118,6 +119,7 @@
 				}
 				this.field('pubDate');
 				this.field('tag');
+				this.field('feature_image');
 				idxSrc.forEach(function (arrayItem) {
 					// console.log("start indexing an item: " + arrayItem.id);
 					// Track the latest value of updated_at,  to stash in localStorage
@@ -135,11 +137,12 @@
 						category = "undefined";
 					}
 					var parsedData 	= {
-						id 			: String(arrayItem.id),
+						id 		: String(arrayItem.id),
 						title 		: String(arrayItem.title),
-						description	: String(arrayItem.custom_excerpt),
+						description	: String(arrayItem.custom_excerpt || arrayItem.excerpt),
 						pubDate 	: String(arrayItem.published_at),
-						tag 		: category
+						tag 		: category,
+						feature_image	: String(arrayItem.feature_image)
 					}
 					if  ( me.includebodysearch ){
 						parsedData.plaintext=String(arrayItem.plaintext);
@@ -151,7 +154,8 @@
 						description: arrayItem.custom_excerpt,
 						pubDate: prettyDate(parsedData.pubDate),
 						link: localUrl,
-						tags: tag_arr
+						tags: tag_arr,
+						feature_image: arrayItem.feature_image
 					};
 					// If there is a metadata "pre"-processor for the item, run it here.
 					if (me.item_preprocessor) {
@@ -374,8 +378,7 @@
 					}
 				}
 				// Get an array of IDs present in current results
-				var listItems = $('.gh-search-item');
-				var currentRefs = listItems
+				var currentRefs = $('.gh-search-item')
 					.map(function(){
 						return this.id.slice(3);
 					}).get();
@@ -394,7 +397,7 @@
 					var levenshtein = new Levenshtein(currentRefs, newRefs);
 					var steps = levenshtein.getSteps();
 					// Apply the operations
-					updateSearchList.call(this, listItems, searchResult, steps);
+					updateSearchList.call(this, searchResult, steps);
 				}
 				// Tidy up
 				if(this.onComplete) {
